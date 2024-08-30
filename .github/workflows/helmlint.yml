@@ -7,7 +7,7 @@ on:
   workflow_call:
 
 jobs:
-  helmlint:
+  helm-lint:
     name: Helm Lint
     runs-on: ubuntu-latest
 
@@ -25,4 +25,4 @@ jobs:
       uses: igabaydulin/helm-check-action@0.2.1
       env:
         CHART_LOCATION: charts/marketplace-assistant
-        CHART_VALUES: tests/helmlint/marketplace-assistant/dummy-values.yml
+        CHART_VALUES: tests/helm-lint/marketplace-assistant/dummy-values.yml
