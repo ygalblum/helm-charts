@@ -1,0 +1,4 @@
+1. The Slack Bot application was deployed.
+2. Wait for the initial ingest job to complete before sending new queries:
+   kubectl get job {{ include "marketplace-assistant.ingest" . }} -o jsonpath={.status.succeeded}
+3. The Kibana UI is exposed as a service: {{ include "marketplace-assistant.kibana" .}}.

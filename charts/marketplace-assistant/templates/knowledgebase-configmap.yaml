@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "marketplace-assistant.knowledgebase-configmap" . }}
+data:
+  settings.yaml: |-
+{{ include "marketplace-assistant.knowledgebase-config" . | indent 4 }}

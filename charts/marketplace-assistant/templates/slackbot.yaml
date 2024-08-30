@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "marketplace-assistant.slackbot-pod-name" . }}
+  labels:
+    app: marketplace-assistant
+    component: slackbot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: marketplace-assistant
+      component: slackbot
+  template:
+    metadata:
+      annotations:
+        checksum/knowledgebase-config: {{ include (print $.Template.BasePath "/knowledgebase-configmap.yaml") . | sha256sum }}
+      labels:
+        app: marketplace-assistant
+        component: slackbot
+    spec:
+      containers:
+      - name: slackbot
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        command:
+        - "/bin/sh"
+        - "-c"
+        - "--"
+        args:
+        - "source /vault-output/output && python -m knowledge_base_gpt.apps.slackbot"
+        volumeMounts:
+        - mountPath: "/db"
+          name: embedding
+          readOnly: true
+        - mountPath: /logs
+          name: logs
+        - mountPath: /etc/knowledgebase
+          name: knowledgebase-config
+        - mountPath: /.cache
+          name: cache
+        - name: vault-output
+          mountPath: /vault-output
+          readOnly: true
+        env:
+        - name: KNOWLEDGE_BASE_SETTINGS_FOLDER
+          value: /etc/knowledgebase
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: "{{ include "marketplace-assistant.redis-password-secret" . }}"
+              key: redis-password
+        resources:
+          limits:
+            cpu: 1
+            memory: 1Gi
+      - name: fluent-bit
+        image: "docker.io/fluent/fluent-bit:{{ .Values.fluentbitImageTag }}"
+        command: ["/fluent-bit/bin/fluent-bit", "-c", "/fluent-bit-config/output"]
+        volumeMounts:
+        - mountPath: /logs
+          name: logs
+        - name: vault-fluent-bit-config
+          mountPath: /fluent-bit-config
+        resources:
+          limits:
+            cpu: 100m
+            memory: 512Mi
+      initContainers:
+      {{- include "marketplace-assistant.vault-init-container" (dict "root" . "name" "slackbot") | nindent 6 }}
+      {{- include "marketplace-assistant.vault-init-container" (dict "root" . "name" "fluent-bit" "outputVolumeName" "fluent-bit-config" "templateVolumeName" "fluent-bit-template") | nindent 6 }}
+      volumes:
+      - name: knowledgebase-config
+        configMap:
+          name: {{ include "marketplace-assistant.knowledgebase-configmap" . }}
+      - name: embedding
+        persistentVolumeClaim:
+          claimName: {{ include "marketplace-assistant.embedding-pvc" . }}
+      - name: logs
+        emptyDir:
+          sizeLimit: 128Mi
+      - name: cache
+        emptyDir:
+          sizeLimit: 1Gi
+      {{- include "marketplace-assistant.vault-base-volumes" . | nindent 6 }}
+      {{- include "marketplace-assistant.vault-instance-volumes" (dict "templateConfigMapName" (include "marketplace-assistant.vault-template-slackbot-configmap" .)) | nindent 6 }}
+      {{- include "marketplace-assistant.vault-instance-volumes" (dict "outputVolumeName" "fluent-bit-config" "templateVolumeName" "fluent-bit-template" "templateConfigMapName" (include "marketplace-assistant.vault-template-fluent-bit-configmap" .)) | nindent 6 }}

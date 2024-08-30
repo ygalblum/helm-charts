@@ -1,0 +1,27 @@
+apiVersion: v2
+name: marketplace-assistant
+description: A Helm chart for Cloud Marketplace Assistant backend
+
+type: application
+
+version: 0.1.0
+
+# This is the version number of the application being deployed. This version number should be
+# incremented each time you make changes to the application. Versions are not expected to
+# follow Semantic Versioning. They should reflect the version the application is using.
+# It is recommended to use it with quotes.
+appVersion: 0.0.4
+
+keywords:
+- slackbot
+
+home: https://github.com/ygalblum/helm-charts
+
+maintainers:
+- name: Ygal Blum
+  email: ygal.blum@gmail.com
+
+dependencies:
+- name: redis
+  version: "19.6.4"
+  repository: "oci://registry-1.docker.io/bitnamicharts"

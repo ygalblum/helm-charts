@@ -1,0 +1,41 @@
+---
+name: Release
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  helmlint:
+    uses: ygalblum/helm-charts/.github/workflows/helmlint.yml@main
+  prechecks:
+    needs:
+    - helmlint
+    runs-on: ubuntu-latest
+    steps:
+    - run: >-
+        python -c "assert set([
+        '${{ needs.helmlint.result }}',
+        ]) == {'success'}"
+  release:
+    needs:
+    - prechecks
+    permissions:
+    - write
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Configure Git
+      run: |
+        git config user.name "$GITHUB_ACTOR"
+        git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+    - name: Run chart-releaser
+      uses: helm/chart-releaser-action@v1.6.0
+      env:
+        CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+...

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "marketplace-assistant.vault-agent-config-configmap" . }}
+data:
+  vault.hcl: |-
+{{ include "marketplace-assistant.vault-agent-config" . | indent 4 }}

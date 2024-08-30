@@ -1,0 +1,11 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "marketplace-assistant.ingest" . }}
+  labels:
+    app: marketplace-assistant
+    component: ingest
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+{{ include "marketplace-assistant.ingest-job-spec" . | indent 4 }}

@@ -1,0 +1,28 @@
+name: Helm Lint
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+  workflow_call:
+
+jobs:
+  helmlint:
+    name: Helm Lint
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Download dependencies
+      run: |
+        helm dependency build charts/marketplace-assistant
+
+    - name: helm-check
+      uses: igabaydulin/helm-check-action@0.2.1
+      env:
+        CHART_LOCATION: charts/marketplace-assistant
+        CHART_VALUES: tests/helmlint/marketplace-assistant/dummy-values.yml
