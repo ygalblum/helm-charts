@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "marketplace-assistant.infinity-deployment-name" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: infinity
+  template:
+    metadata:
+      labels:
+        app: infinity
+    spec:
+      containers:
+      - resources:
+          limits:
+            cpu: "500m"
+            memory: "2Gi"
+          requests:
+            cpu: "500m"
+            memory: "2Gi"
+        name: server
+        command:
+        - /opt/app-root/src/venv/bin/infinity_emb
+        - v2
+        - '--model-id'
+        - $(EMBEDDING_MODEL_NAME)
+        env:
+        - name: EMBEDDING_MODEL_NAME
+          value: {{ .Values.infinity.model }}
+        - name: HF_HOME
+          value: /models-cache
+        - name: INFINITY_PORT
+          value: "7997"
+        ports:
+        - name: http
+          containerPort: 7997
+          protocol: TCP
+        image: 'images.paas.redhat.com/aren/infinity:v0.0.1'
+        volumeMounts:
+        - name: cache
+          mountPath: /models-cache
+        securityContext:
+          capabilities:
+            drop:
+            - ALL
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+          seccompProfile:
+            type: RuntimeDefault
+        readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+              scheme: HTTP
+            timeoutSeconds: 5
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 3
+        livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+              scheme: HTTP
+            timeoutSeconds: 8
+            periodSeconds: 100
+            successThreshold: 1
+            failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /health
+            port: http
+            scheme: HTTP
+          timeoutSeconds: 1
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 24
+      volumes:
+      - name: cache
+        emptyDir:
+          medium: Memory
+          sizeLimit: 1Gi
+...

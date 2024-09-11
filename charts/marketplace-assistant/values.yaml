@@ -88,6 +88,9 @@ vllm:
 splunk:
   sourceType: ""
 
+infinity:
+  model: sentence-transformers/all-MiniLM-L12-v1
+
 redis:
   architecture: standalone
   master:

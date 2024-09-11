@@ -194,3 +194,24 @@ Ingest Job hook Job Name
 {{- define "marketplace-assistant.ingest-job-hook-job-name" -}}
 {{- printf "%s-%s" (include "marketplace-assistant.fullname" .) "ingest-job-hook" }}
 {{- end }}
+
+{{/*
+Infinity Deployment name
+*/}}
+{{- define "marketplace-assistant.infinity-deployment-name" -}}
+{{- printf "%s-%s" (include "marketplace-assistant.fullname" .) "infinity" }}
+{{- end }}
+
+{{/*
+Infinity Service name
+*/}}
+{{- define "marketplace-assistant.infinity-service-name" -}}
+{{- printf "%s-%s" (include "marketplace-assistant.fullname" .) "infinity" }}
+{{- end }}
+
+{{/*
+Infinity Endpoint
+*/}}
+{{- define "marketplace-assistant.infinity-endpoint" -}}
+{{- printf "http://%s:7997" (include "marketplace-assistant.infinity-service-name" .) }}
+{{- end }}
