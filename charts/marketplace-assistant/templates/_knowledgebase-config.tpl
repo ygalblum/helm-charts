@@ -38,10 +38,13 @@ google_drive:
 text_splitter: {}
 
 embedding:
-  mode: hugging_face
+  mode: infinity
 
-hugging_face:
-  embedding_model: $EMBEDDINGS_MODEL_NAME|all-MiniLM-L6-v2
+infinity:
+  embedding_model: $EMBEDDINGS_MODEL_NAME|{{ .Values.infinity.model }}
+  api_url: "{{ include "marketplace-assistant.infinity-endpoint" . }}"
+
+hugging_face: {}
 
 vectorstore:
   persist_directory: "/db"
