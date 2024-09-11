@@ -129,7 +129,17 @@ Vault Template for Slackbot
   {{- with secret "apps/cloud-marketplace-chatbot-admin/vllm" }}
   export OPENAI_API_KEY='{{ .Data.data.token }}'
   {{ end }}
+`}}
+{{- if eq .Values.environment "production" }}
+{{`
+  {{- with secret "apps/cloud-marketplace-chatbot-admin/production/slackbot" }}
+`}}
+{{- else }}
+{{`
   {{- with secret "apps/cloud-marketplace-chatbot-admin/slackbot" }}
+`}}
+{{- end }}
+{{`
   export SLACK_APP_TOKEN='{{ .Data.data.app_token }}'
   export SLACK_BOT_TOKEN='{{ .Data.data.bot_token }}'
   export FORWARD_QUESTION_CHANNEL_NAME='{{ .Data.data.forward_channel }}'
@@ -205,7 +215,7 @@ Vault Template for Fluent-Bit Configuration file
   port 8088
   tls on
   tls.verify off
-  event_sourcetype {{ required "splunk.sourceType must be set" .Values.splunk.sourceType }}
+  event_sourcetype {{ .Values.environment }}
   event_key $log
 {{`
 {{- with secret "apps/cloud-marketplace-chatbot-admin/splunk" }}
