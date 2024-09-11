@@ -100,3 +100,5 @@ redis:
         memory: 300Mi
     persistence:
       existingClaim: changeme-redis # The actual name will be set using a post-install hook
+
+environment: preprod
