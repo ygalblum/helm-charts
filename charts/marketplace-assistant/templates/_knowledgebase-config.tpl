@@ -25,6 +25,7 @@ history:
 redis:
   host: "{{ include "marketplace-assistant.redis-host" . }}"
   password: $REDIS_PASSWORD|""
+  ttl: 3600
 
 log:
   chat_log_path: /logs/slackbot_chat_log.log
