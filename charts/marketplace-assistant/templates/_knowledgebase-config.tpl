@@ -13,6 +13,9 @@ slackbot:
   app_token: $SLACK_APP_TOKEN|""
   bot_token: $SLACK_BOT_TOKEN|""
   forward_channel: $FORWARD_QUESTION_CHANNEL_NAME|""
+  command_strings:
+    reset: cmpa-reset-conversation
+    forward: cmpa-forward-conversation
 
 llm:
   mode: vllm
