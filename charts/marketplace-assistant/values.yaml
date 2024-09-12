@@ -85,9 +85,6 @@ vllm:
     size: 50Gi
   model: instructlab/granite-7b-lab
 
-splunk:
-  sourceType: ""
-
 infinity:
   model: sentence-transformers/all-MiniLM-L12-v1
 
