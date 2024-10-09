@@ -2,6 +2,26 @@ apiVersion: v1
 entries:
   marketplace-assistant:
   - apiVersion: v2
+    appVersion: 0.1.2
+    created: "2024-10-09T22:36:00.67228742Z"
+    dependencies:
+    - name: redis
+      repository: oci://registry-1.docker.io/bitnamicharts
+      version: 19.6.4
+    description: A Helm chart for Cloud Marketplace Assistant backend
+    digest: c9575323f4df88840504e10ded2fbedc5d13f25704448102f98359915312c118
+    home: https://github.com/ygalblum/helm-charts
+    keywords:
+    - slackbot
+    maintainers:
+    - email: ygal.blum@gmail.com
+      name: Ygal Blum
+    name: marketplace-assistant
+    type: application
+    urls:
+    - https://github.com/ygalblum/helm-charts/releases/download/marketplace-assistant-0.3.2/marketplace-assistant-0.3.2.tgz
+    version: 0.3.2
+  - apiVersion: v2
     appVersion: 0.1.1
     created: "2024-09-23T19:11:22.375169085Z"
     dependencies:
@@ -81,4 +101,4 @@ entries:
     urls:
     - https://github.com/ygalblum/helm-charts/releases/download/marketplace-assistant-0.1.0/marketplace-assistant-0.1.0.tgz
     version: 0.1.0
-generated: "2024-09-23T19:11:22.375182871Z"
+generated: "2024-10-09T22:36:00.672312366Z"
