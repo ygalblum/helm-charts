@@ -75,7 +75,7 @@ spec:
           timeoutSeconds: 1
           periodSeconds: 30
           successThreshold: 1
-          failureThreshold: 24
+          failureThreshold: 60
       volumes:
       - name: cache
         emptyDir:
